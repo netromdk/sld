@@ -17,7 +17,8 @@ void Grid::paintEvent(QPaintEvent *event) {
   QPainter painter(this);
   foreach (const auto &field, fields) {
     const auto &rect = field.getRect();
-    painter.fillRect(rect, Qt::white);
+    const auto &clr = field.getColor();
+    painter.fillRect(rect, clr);
     painter.setPen(Qt::black);
     painter.drawRect(rect);
   }
@@ -27,7 +28,7 @@ void Grid::createGrid() {
   for (int x = 0; x < width; x++) {
     for (int y = 0; y < height; y++) {
       QRect rect(x * side, y * side, side, side);
-      fields << Field(rect);
+      fields << Field(rect, Qt::white);
     }
   }
 }
