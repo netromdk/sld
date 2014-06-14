@@ -7,6 +7,8 @@
 
 #include <memory>
 
+class QPainter;
+
 class Field;
 typedef std::shared_ptr<Field> FieldPtr;
 
@@ -21,10 +23,13 @@ public:
 
   const QColor &getColor() const  { return color; }
   void setColor(const QColor &color) { this->color = color; }
+  void setPreviewColor(const QColor &color) { previewColor = color; }
+
+  void paint(QPainter &painter);
 
 private:
   QRect rect;
-  QColor color;
+  QColor color, previewColor;
 };
 
 QDataStream &operator<<(QDataStream &stream, const Field &field);

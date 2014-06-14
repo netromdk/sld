@@ -8,6 +8,7 @@
 Grid::Grid(int width, int height, Toolbox *toolbox)
   : width(width), height(height), side(30), toolbox(toolbox)
 {
+  setMouseTracking(true);
   updateSize();
   createGrid();
 }
@@ -51,10 +52,7 @@ void Grid::paintEvent(QPaintEvent *event) {
       continue;
     }
 
-    const auto &clr = field->getColor();
-    painter.fillRect(rect, clr);
-    painter.setPen(QColor("#000F55")); // pen blue
-    painter.drawRect(rect);
+    field->paint(painter);
   }
 }
 
@@ -65,6 +63,16 @@ void Grid::mouseReleaseEvent(QMouseEvent *event) {
   if (field) {
     field->setColor(toolbox->getColor());
     update(field->getRect());
+  }
+}
+
+void Grid::mouseMoveEvent(QMouseEvent *event) {
+  QWidget::mouseMoveEvent(event);
+
+  auto field = findField(event->pos());
+  if (field) {
+    field->setPreviewColor(toolbox->getColor());
+    update();
   }
 }
 

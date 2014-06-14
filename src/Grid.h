@@ -20,6 +20,7 @@ public:
 protected:
   void paintEvent(QPaintEvent *event);
   void mouseReleaseEvent(QMouseEvent *event);
+  void mouseMoveEvent(QMouseEvent *event);
 
 private:
   void updateSize();
