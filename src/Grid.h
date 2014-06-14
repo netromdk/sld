@@ -22,6 +22,7 @@ protected:
   void mouseReleaseEvent(QMouseEvent *event);
 
 private:
+  void updateSize();
   void createGrid();
   FieldPtr findField(const QPoint &pos);
   

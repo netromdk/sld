@@ -8,8 +8,7 @@
 Grid::Grid(int width, int height, Toolbox *toolbox)
   : width(width), height(height), side(30), toolbox(toolbox)
 {
-  QSize size(width * side, height * side);
-  setMinimumSize(size);
+  updateSize();
   createGrid();
 }
 
@@ -18,6 +17,7 @@ Grid::~Grid() {
 }
 
 void Grid::save(QDataStream &stream) {
+  stream << width << height;
   stream << fields.size();
   foreach (const auto field, fields) {
     stream << *field;
@@ -25,6 +25,10 @@ void Grid::save(QDataStream &stream) {
 }
 
 void Grid::load(QDataStream &stream, int version) {
+  stream >> width;
+  stream >> height;
+  updateSize();
+
   fields.clear();
   int amount;
   stream >> amount;
@@ -62,6 +66,11 @@ void Grid::mouseReleaseEvent(QMouseEvent *event) {
     field->setColor(toolbox->getColor());
     update(field->getRect());
   }
+}
+
+void Grid::updateSize() {
+  QSize size(width * side, height * side);
+  setMinimumSize(size);
 }
 
 void Grid::createGrid() {
