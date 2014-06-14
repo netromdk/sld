@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QDataStream>
 
+#include "Util.h"
 #include "Grid.h"
 #include "Toolbox.h"
 #include "Version.h"
@@ -16,6 +17,10 @@ MainWindow::MainWindow() {
   setWindowTitle(tr("Strategic Layout Designer"));
   createLayout();
   createMenu();
+}
+
+void MainWindow::showEvent(QShowEvent *event) {
+  Util::centerWidget(this);
 }
 
 void MainWindow::openProject() {

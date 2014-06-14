@@ -11,6 +11,9 @@ class MainWindow : public QMainWindow {
 public:
   MainWindow();
 
+protected:
+  void showEvent(QShowEvent *event);
+
 private slots:
   void openProject();
   void saveProject();
