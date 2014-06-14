@@ -17,6 +17,25 @@ Grid::~Grid() {
   fields.clear();
 }
 
+void Grid::save(QDataStream &stream) {
+  stream << fields.size();
+  foreach (const auto field, fields) {
+    stream << *field;
+  }
+}
+
+void Grid::load(QDataStream &stream, int version) {
+  fields.clear();
+  int amount;
+  stream >> amount;
+  for (int i = 0; i < amount; i++) {
+    auto *field = new Field;
+    stream >> *field;
+    fields << FieldPtr(field);
+  }
+  update();
+}
+
 void Grid::paintEvent(QPaintEvent *event) {
   QWidget::paintEvent(event);
 

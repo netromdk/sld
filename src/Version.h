@@ -8,6 +8,9 @@
 #define MINOR_VERSION 1
 #define BUILD_VERSION 0
 
+#define PROJECT_HEADER "SLDP"
+#define PROJECT_VERSION 1
+
 #define BUILD_DATE "June 13, 2014"
 
 #define MAJOR_FACTOR 1000000

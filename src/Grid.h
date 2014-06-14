@@ -7,11 +7,15 @@
 #include "Field.h"
 
 class Toolbox;
+class QDataStream;
 
 class Grid : public QWidget {
 public:
   Grid(int width, int height, Toolbox *toolbox);
   ~Grid();
+
+  void save(QDataStream &stream);
+  void load(QDataStream &stream, int version);
 
 protected:
   void paintEvent(QPaintEvent *event);
