@@ -19,9 +19,15 @@ Grid::~Grid() {
 void Grid::paintEvent(QPaintEvent *event) {
   QWidget::paintEvent(event);
 
+  QRect prect = event->rect();
+
   QPainter painter(this);
   foreach (const auto field, fields) {
     const auto &rect = field->getRect();
+    if (!prect.contains(rect)) {
+      continue;
+    }
+
     const auto &clr = field->getColor();
     painter.fillRect(rect, clr);
     painter.setPen(Qt::black);
