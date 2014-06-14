@@ -1,6 +1,7 @@
-#include <QVBoxLayout>
+#include <QHBoxLayout>
 
 #include "Grid.h"
+#include "Toolbox.h"
 #include "MainWindow.h"
 
 MainWindow::MainWindow() {
@@ -8,11 +9,14 @@ MainWindow::MainWindow() {
 }
 
 void MainWindow::createLayout() {
-  auto *grid = new Grid(16, 16);
+  auto *toolbox = new Toolbox;
 
-  auto *layout = new QVBoxLayout;
+  auto *grid = new Grid(16, 16, toolbox);
+
+  auto *layout = new QHBoxLayout;
   layout->setContentsMargins(5, 5, 5, 5);
   layout->addWidget(grid);
+  layout->addWidget(toolbox);
 
   auto *w = new QWidget;
   w->setLayout(layout);

@@ -3,9 +3,10 @@
 #include <QMouseEvent>
 
 #include "Grid.h"
+#include "Toolbox.h"
 
-Grid::Grid(int width, int height)
-  : width(width), height(height), side(30)
+Grid::Grid(int width, int height, Toolbox *toolbox)
+  : width(width), height(height), side(30), toolbox(toolbox)
 {
   QSize size(width * side, height * side);
   setMinimumSize(size);
@@ -20,17 +21,16 @@ void Grid::paintEvent(QPaintEvent *event) {
   QWidget::paintEvent(event);
 
   QRect prect = event->rect();
-
   QPainter painter(this);
   foreach (const auto field, fields) {
     const auto &rect = field->getRect();
-    if (!prect.contains(rect)) {
+    if (!prect.intersects(rect)) {
       continue;
     }
 
     const auto &clr = field->getColor();
     painter.fillRect(rect, clr);
-    painter.setPen(Qt::black);
+    painter.setPen(QColor("#000F55")); // pen blue
     painter.drawRect(rect);
   }
 }
@@ -40,7 +40,7 @@ void Grid::mouseReleaseEvent(QMouseEvent *event) {
 
   auto field = findField(event->pos());
   if (field) {
-    field->setColor(Qt::green);
+    field->setColor(toolbox->getColor());
     update(field->getRect());
   }
 }

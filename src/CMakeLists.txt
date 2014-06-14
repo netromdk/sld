@@ -13,6 +13,14 @@ ADD_EXECUTABLE(
 
   Field.h
   Field.cpp
+
+  Toolbox.h
+  Toolbox.cpp
+
+  ColorButton.h
+  ColorButton.cpp
+  ColorWidget.h
+  ColorWidget.cpp
   )
 
 QT5_USE_MODULES(${NAME} Core Gui Widgets)
