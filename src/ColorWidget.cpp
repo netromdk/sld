@@ -13,8 +13,8 @@ void ColorWidget::setCurrentIndex(int idx) {
     return;
   }
   auto *btn = buttons[idx];
-  btn->click();
   btn->setDown(true);
+  emit colorClicked(btn->getColor());
 }
 
 void ColorWidget::onColorClicked(const QColor &color) {

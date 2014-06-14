@@ -9,6 +9,8 @@ class ColorButton : public QToolButton {
 public:
   ColorButton(const QColor &color);
 
+  const QColor &getColor() const { return color; }
+
 signals:
   void colorClicked(const QColor &color);
 
