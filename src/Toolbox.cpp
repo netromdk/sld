@@ -14,6 +14,7 @@ void Toolbox::createLayout() {
   auto *colorWidget = new ColorWidget;
   connect(colorWidget, &ColorWidget::colorClicked,
           this, &Toolbox::onColorClicked);
+  colorWidget->setCurrentIndex(0);
   
   auto *layout = new QVBoxLayout;
   layout->setContentsMargins(0, 0, 0, 0);

@@ -13,6 +13,8 @@ class ColorWidget : public QWidget {
 public:
   ColorWidget();
 
+  void setCurrentIndex(int idx);
+
 signals:
   void colorClicked(const QColor &color);
 

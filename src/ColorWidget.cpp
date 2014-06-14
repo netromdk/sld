@@ -8,6 +8,15 @@ ColorWidget::ColorWidget() {
   setup();
 }
 
+void ColorWidget::setCurrentIndex(int idx) {
+  if (idx < 0 || idx > buttons.size() - 1) {
+    return;
+  }
+  auto *btn = buttons[idx];
+  btn->click();
+  btn->setDown(true);
+}
+
 void ColorWidget::onColorClicked(const QColor &color) {
   auto *btn = qobject_cast<ColorButton*>(sender());
   if (!btn) return;
