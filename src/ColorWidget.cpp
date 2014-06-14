@@ -8,6 +8,17 @@ ColorWidget::ColorWidget() {
   setup();
 }
 
+void ColorWidget::onColorClicked(const QColor &color) {
+  auto *btn = qobject_cast<ColorButton*>(sender());
+  if (!btn) return;
+  foreach (auto *b, buttons) {
+    if (b != btn) {
+      b->setDown(false);
+    }
+  }
+  emit colorClicked(color);
+}
+
 void ColorWidget::createLayout() {
   layout = new QGridLayout;
   layout->setContentsMargins(0, 0, 0, 0);
@@ -31,7 +42,7 @@ void ColorWidget::setup() {
 
 void ColorWidget::addButton(const QColor &color, int row, int column) {
   auto *btn = new ColorButton(color);
-  connect(btn, SIGNAL(colorClicked(const QColor&)),
-          SIGNAL(colorClicked(const QColor&)));
+  connect(btn, &ColorButton::colorClicked, this, &ColorWidget::onColorClicked);
   layout->addWidget(btn, row, column);
+  buttons << btn;
 }

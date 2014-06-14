@@ -10,5 +10,6 @@ ColorButton::ColorButton(const QColor &color) : color(color) {
 
 void ColorButton::mouseReleaseEvent(QMouseEvent *event) {
   QToolButton::mouseReleaseEvent(event);
+  setDown(true);
   emit colorClicked(color);
 }
