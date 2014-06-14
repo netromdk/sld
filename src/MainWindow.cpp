@@ -70,7 +70,7 @@ void MainWindow::saveProject() {
 void MainWindow::createLayout() {
   auto *toolbox = new Toolbox;
 
-  grid = new Grid(10, 10, toolbox);
+  grid = new Grid(16, 16, toolbox);
 
   auto *layout = new QHBoxLayout;
   layout->setContentsMargins(5, 5, 5, 5);

@@ -17,8 +17,7 @@ Grid::~Grid() {
 }
 
 void Grid::save(QDataStream &stream) {
-  stream << width << height;
-  stream << fields.size();
+  stream << width << height << side << fields.size();
   foreach (const auto field, fields) {
     stream << *field;
   }
@@ -27,6 +26,7 @@ void Grid::save(QDataStream &stream) {
 void Grid::load(QDataStream &stream, int version) {
   stream >> width;
   stream >> height;
+  stream >> side;
   updateSize();
 
   fields.clear();
