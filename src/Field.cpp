@@ -109,6 +109,11 @@ void Field::updateBorders() {
 
 QDataStream &operator<<(QDataStream &stream, const Field &field) {
   stream << field.getRect() << field.getColor();
+  const auto &borders = field.getBorders();
+  stream << borders.size();
+  foreach (auto key, borders.keys()) {
+    stream << (int) key << borders[key];
+  }
   return stream;
 }
 
@@ -120,5 +125,29 @@ QDataStream &operator>>(QDataStream &stream, Field &field) {
   QColor color;
   stream >> color;
   field.setColor(color);
+
+  int borderLen;
+  stream >> borderLen;
+  QMap<CardinalDir, Border> borders;
+  for (int i = 0; i < borderLen; i++) {
+    int type;
+    stream >> type;
+    Border border;
+    stream >> border;
+    borders[(CardinalDir) type] = border;
+  }
+  field.setBorders(borders);
+  return stream;
+}
+
+QDataStream &operator<<(QDataStream &stream, const Border &border) {
+  stream << border.rect << border.color << border.active;
+  return stream;
+}
+
+QDataStream &operator>>(QDataStream &stream, Border &border) {
+  stream >> border.rect;
+  stream >> border.color;
+  stream >> border.active;
   return stream;
 }

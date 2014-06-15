@@ -10,6 +10,13 @@
 
 class QPainter;
 
+enum class CardinalDir : int {
+  North,
+  South,
+  West,
+  East
+};
+
 class Border {
 public:
   Border() : color(Qt::transparent), previewColor(QColor()), active(false) { }
@@ -24,13 +31,6 @@ typedef std::shared_ptr<Field> FieldPtr;
 
 class Field {
 public:
-  enum class CardinalDir : int {
-    North,
-    South,
-    West,
-    East
-  };
-
   Field();
   Field(const QRect &rect, const QColor &color);
 
@@ -44,6 +44,9 @@ public:
   void tryDetectBorder(const QPoint &pos, const QColor &color,
                        bool preview = false);
 
+  const QMap<CardinalDir, Border> &getBorders() const { return borders; }
+  void setBorders(const QMap<CardinalDir, Border> &borders) { this->borders = borders; }
+
   void paint(QPainter &painter);
 
 private:
@@ -56,5 +59,7 @@ private:
 
 QDataStream &operator<<(QDataStream &stream, const Field &field);
 QDataStream &operator>>(QDataStream &stream, Field &field);
+QDataStream &operator<<(QDataStream &stream, const Border &border);
+QDataStream &operator>>(QDataStream &stream, Border &border);
 
 #endif // SLD_FIELD_H
