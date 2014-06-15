@@ -3,6 +3,7 @@
 #include <QMouseEvent>
 
 #include "Grid.h"
+#include "Util.h"
 #include "Toolbox.h"
 
 Grid::Grid(int width, int height, Toolbox *toolbox)
@@ -72,8 +73,16 @@ void Grid::mouseReleaseEvent(QMouseEvent *event) {
       break;
 
     case ToolKind::Border:
-      field->tryDetectBorder(event->pos(), toolbox->getColor());
-      update(field->getRect());
+      int dir =
+        field->tryDetectBorder(event->pos(), toolbox->getColor());
+      if (dir != -1) {
+        CardinalDir ndir = (CardinalDir) dir;
+        auto neighbor = findNeighbor(field, ndir);
+        if (neighbor) {
+          neighbor->setBorder(Util::oppositeDir(ndir), toolbox->getColor());
+        }
+        update(field->getRect());
+      }
       break;
     }
   }
@@ -91,15 +100,25 @@ void Grid::mouseMoveEvent(QMouseEvent *event) {
       break;
 
     case ToolKind::Border:
-      field->tryDetectBorder(event->pos(), toolbox->getColor(), true);
-      update();
+      int dir =
+        field->tryDetectBorder(event->pos(), toolbox->getColor(), true);
+      if (dir != -1) {
+        CardinalDir ndir = (CardinalDir) dir;
+        auto neighbor = findNeighbor(field, ndir);
+        if (neighbor) {
+          neighbor->setBorder(Util::oppositeDir(ndir), toolbox->getColor(),
+                              true);
+        }
+        update();
+      }
       break;
     }
   }
 }
 
 void Grid::updateSize() {
-  QSize size(width * side, height * side);
+  // + a little slack.
+  QSize size(width * side + 2, height * side + 2);
   setMinimumSize(size);
 }
 
@@ -116,6 +135,34 @@ FieldPtr Grid::findField(const QPoint &pos) {
   foreach (const auto field, fields) {
     if (field->containsPoint(pos)) {
       return field;
+    }
+  }
+  return nullptr;
+}
+
+FieldPtr Grid::findNeighbor(FieldPtr field, CardinalDir dir) {
+  QRect rect = field->getRect();
+  switch (dir) {
+  case CardinalDir::North:
+    rect.translate(0, -1); // Move up a bit
+    break;
+
+  case CardinalDir::South:
+    rect.translate(0, 1); // Move down a bit
+    break;
+
+  case CardinalDir::West:
+    rect.translate(-1, 0); // Move west a bit
+    break;
+
+  case CardinalDir::East:
+    rect.translate(1, 0); // Move east a bit
+    break;
+  }
+  foreach (const auto f, fields) {
+    if (f == field) continue;
+    if (f->getRect().intersects(rect)) {
+      return f;
     }
   }
   return nullptr;

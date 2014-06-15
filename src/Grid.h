@@ -27,6 +27,7 @@ private:
   void updateSize();
   void createGrid();
   FieldPtr findField(const QPoint &pos);
+  FieldPtr findNeighbor(FieldPtr field, CardinalDir dir);
   
   int width, height, side;
   Toolbox *toolbox;

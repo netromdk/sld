@@ -20,8 +20,8 @@ bool Field::containsPoint(const QPoint &pos) const {
   return rect.contains(pos);
 }
 
-void Field::tryDetectBorder(const QPoint &pos, const QColor &color,
-                            bool preview) {
+int Field::tryDetectBorder(const QPoint &pos, const QColor &color,
+                           bool preview) {
   foreach (auto key, borders.keys()) {
     Border &border = borders[key];
     auto &rect = border.rect;
@@ -52,8 +52,27 @@ void Field::tryDetectBorder(const QPoint &pos, const QColor &color,
         else {
           border.color = color;
         }
+
+        // Return the direction the border was found.
+        return (int) key;
       }
+
+      // Stop here because no other field will contain the point.
+      break;
     }
+  }
+
+  return -1;
+}
+
+void Field::setBorder(CardinalDir dir, const QColor &color, bool preview) {
+  auto &border = borders[dir];
+  border.active = true;
+  if (preview) {
+    border.previewColor = color;
+  }
+  else {
+    border.color = color;
   }
 }
 
@@ -82,7 +101,7 @@ void Field::paint(QPainter &painter) {
 }
 
 void Field::updateBorders() {
-  float slack = 0.25;
+  float slack = 0.16;
   int w = rect.width() * slack;
   borders.clear();
 
