@@ -18,10 +18,12 @@ private slots:
   void newProject();
   void openProject();
   void saveProject();
+  void saveAsProject();
 
 private:
   void createLayout();
   void createMenu();
+  void save(bool askFile = true);
 
   Grid *grid;
   QString file;

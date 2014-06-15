@@ -61,23 +61,11 @@ void MainWindow::openProject() {
 }
 
 void MainWindow::saveProject() {
-  QString file =
-    QFileDialog::getSaveFileName(this, tr("Save Project"), QString(),
-                                 tr("SLD Project (*.sldp)"));
-  if (file.isEmpty()) {
-    return;
-  }
+  save(false);
+}
 
-  QFile f(file);
-  if (!f.open(QIODevice::WriteOnly)) {
-    QMessageBox::warning(this, "sld",
-                         tr("Could not open file for writing: %1").arg(file));
-    return;
-  }
-
-  QDataStream stream(&f);
-  stream << QString(PROJECT_HEADER) << (int) PROJECT_VERSION;
-  grid->save(stream);
+void MainWindow::saveAsProject() {
+  save(true);
 }
 
 void MainWindow::createLayout() {
@@ -104,4 +92,34 @@ void MainWindow::createMenu() {
                       QKeySequence::Open);
   fileMenu->addAction(tr("Save project"), this, SLOT(saveProject()),
                       QKeySequence::Save);
+  fileMenu->addAction(tr("Save as.."), this, SLOT(saveAsProject()),
+                      QKeySequence::SaveAs);
+}
+
+void MainWindow::save(bool askFile) {
+  QString path;
+  if (askFile || this->file.isEmpty()) {
+    path =
+      QFileDialog::getSaveFileName(this, tr("Save Project"), QString(),
+                                   tr("SLD Project (*.sldp)"));
+    if (path.isEmpty()) {
+      return;
+    }
+  }
+  else {
+    path = this->file;
+  }
+
+  QFile f(path);
+  if (!f.open(QIODevice::WriteOnly)) {
+    QMessageBox::warning(this, "sld",
+                         tr("Could not open file for writing: %1").arg(path));
+    return;
+  }
+
+  QDataStream stream(&f);
+  stream << QString(PROJECT_HEADER) << (int) PROJECT_VERSION;
+  grid->save(stream);
+
+  this->file = path;
 }
