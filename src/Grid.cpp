@@ -139,6 +139,13 @@ void Grid::mouseMoveEvent(QMouseEvent *event) {
   }
 }
 
+void Grid::leaveEvent(QEvent *event) {
+  QWidget::leaveEvent(event);
+
+  // Re-paint so that previewing fields/borders are cleared.
+  update();
+}
+
 void Grid::updateSize() {
   // + a little slack.
   QSize size(width * side * zoomFactor + 2, height * side * zoomFactor + 2);
