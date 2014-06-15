@@ -23,8 +23,8 @@ bool Field::containsPoint(const QPoint &pos) const {
 int Field::tryDetectBorder(const QPoint &pos, const QColor &color,
                            bool preview) {
   foreach (auto key, borders.keys()) {
-    Border &border = borders[key];
-    auto &rect = border.rect;
+    auto border = borders[key];
+    auto &rect = border->getRect();
     if (rect.contains(pos)) {
       bool ok = true;
       float slack = 0.2;
@@ -45,12 +45,12 @@ int Field::tryDetectBorder(const QPoint &pos, const QColor &color,
       }
 
       if (ok) {
-        border.active = true;
+        border->setActive(true);
         if (preview) {
-          border.previewColor = color;
+          border->setPreviewColor(color);
         }
         else {
-          border.color = color;
+          border->setColor(color);
         }
 
         // Return the direction the border was found.
@@ -67,12 +67,12 @@ int Field::tryDetectBorder(const QPoint &pos, const QColor &color,
 
 void Field::setBorder(CardinalDir dir, const QColor &color, bool preview) {
   auto &border = borders[dir];
-  border.active = true;
+  border->setActive(true);
   if (preview) {
-    border.previewColor = color;
+    border->setPreviewColor(color);
   }
   else {
-    border.color = color;
+    border->setColor(color);
   }
 }
 
@@ -89,13 +89,8 @@ void Field::paint(QPainter &painter) {
 
   foreach (auto key, borders.keys()) {
     auto &border = borders[key];
-    if (border.active) {
-      QColor c = border.color;
-      if (border.previewColor.isValid()) {
-        c = border.previewColor;
-        border.previewColor = QColor();
-      }
-      painter.fillRect(border.rect, c);
+    if (border->isActive()) {
+      border->paint(painter);
     }
   }
 }
@@ -105,24 +100,24 @@ void Field::updateBorders() {
   int w = rect.width() * slack;
   borders.clear();
 
-  Border border;
-  border.rect = QRect(rect.topLeft(), QSize(rect.width(), w));
+  BorderPtr border(new Border);
+  border->setRect(QRect(rect.topLeft(), QSize(rect.width(), w)));
   borders[CardinalDir::North] = border;
 
   QRect r(rect.topLeft(), QSize(rect.width(), w));
   r.translate(0, rect.height() - w);
-  border = Border();
-  border.rect = r;
+  border.reset(new Border);
+  border->setRect(r);
   borders[CardinalDir::South] = border;
 
-  border = Border();
-  border.rect = QRect(rect.topLeft(), QSize(w, rect.height()));
+  border.reset(new Border);
+  border->setRect(QRect(rect.topLeft(), QSize(w, rect.height())));
   borders[CardinalDir::West] = border;
 
   r = QRect(rect.topLeft(), QSize(w, rect.height()));
   r.translate(rect.height() - w, 0);
-  border = Border();
-  border.rect = r;
+  border.reset(new Border);
+  border->setRect(r);
   borders[CardinalDir::East] = border;
 }
 
@@ -131,7 +126,7 @@ QDataStream &operator<<(QDataStream &stream, const Field &field) {
   const auto &borders = field.getBorders();
   stream << borders.size();
   foreach (auto key, borders.keys()) {
-    stream << (int) key << borders[key];
+    stream << (int) key << *borders[key];
   }
   return stream;
 }
@@ -147,26 +142,34 @@ QDataStream &operator>>(QDataStream &stream, Field &field) {
 
   int borderLen;
   stream >> borderLen;
-  QMap<CardinalDir, Border> borders;
+  QMap<CardinalDir, BorderPtr> borders;
   for (int i = 0; i < borderLen; i++) {
     int type;
     stream >> type;
-    Border border;
-    stream >> border;
-    borders[(CardinalDir) type] = border;
+    auto *border = new Border;
+    stream >> *border;
+    borders[(CardinalDir) type] = BorderPtr(border);
   }
   field.setBorders(borders);
   return stream;
 }
 
 QDataStream &operator<<(QDataStream &stream, const Border &border) {
-  stream << border.rect << border.color << border.active;
+  stream << border.getRect() << border.getColor() << border.isActive();
   return stream;
 }
 
 QDataStream &operator>>(QDataStream &stream, Border &border) {
-  stream >> border.rect;
-  stream >> border.color;
-  stream >> border.active;
+  QRect rect;
+  stream >> rect;
+  border.setRect(rect);
+
+  QColor color;
+  stream >> color;
+  border.setColor(color);
+
+  bool active;
+  stream >> active;
+  border.setActive(active);
   return stream;
 }

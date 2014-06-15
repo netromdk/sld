@@ -14,6 +14,9 @@ ADD_EXECUTABLE(
   Grid.h
   Grid.cpp
 
+  Border.h
+  Border.cpp
+
   Field.h
   Field.cpp
 

@@ -8,18 +8,10 @@
 
 #include <memory>
 
+#include "Border.h"
 #include "CardinalDir.h"
 
 class QPainter;
-
-class Border {
-public:
-  Border() : color(Qt::transparent), previewColor(QColor()), active(false) { }
-
-  QRect rect;
-  QColor color, previewColor;
-  bool active;
-};
 
 class Field;
 typedef std::shared_ptr<Field> FieldPtr;
@@ -39,8 +31,8 @@ public:
   int tryDetectBorder(const QPoint &pos, const QColor &color,
                       bool preview = false);
 
-  const QMap<CardinalDir, Border> &getBorders() const { return borders; }
-  void setBorders(const QMap<CardinalDir, Border> &borders) { this->borders = borders; }
+  const QMap<CardinalDir, BorderPtr> &getBorders() const { return borders; }
+  void setBorders(const QMap<CardinalDir, BorderPtr> &borders) { this->borders = borders; }
   void setBorder(CardinalDir dir, const QColor &color, bool preview = false);
 
   void paint(QPainter &painter);
@@ -50,7 +42,7 @@ private:
 
   QRect rect;
   QColor color, previewColor;
-  QMap<CardinalDir, Border> borders;
+  QMap<CardinalDir, BorderPtr> borders;
 };
 
 QDataStream &operator<<(QDataStream &stream, const Field &field);
