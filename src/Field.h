@@ -47,7 +47,5 @@ private:
 
 QDataStream &operator<<(QDataStream &stream, const Field &field);
 QDataStream &operator>>(QDataStream &stream, Field &field);
-QDataStream &operator<<(QDataStream &stream, const Border &border);
-QDataStream &operator>>(QDataStream &stream, Border &border);
 
 #endif // SLD_FIELD_H

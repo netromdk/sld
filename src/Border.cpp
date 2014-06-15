@@ -10,3 +10,23 @@ void Border::paint(QPainter &painter) {
   }
   painter.fillRect(rect, c);
 }
+
+QDataStream &operator<<(QDataStream &stream, const Border &border) {
+  stream << border.getRect() << border.getColor() << border.isActive();
+  return stream;
+}
+
+QDataStream &operator>>(QDataStream &stream, Border &border) {
+  QRect rect;
+  stream >> rect;
+  border.setRect(rect);
+
+  QColor color;
+  stream >> color;
+  border.setColor(color);
+
+  bool active;
+  stream >> active;
+  border.setActive(active);
+  return stream;
+}

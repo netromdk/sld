@@ -3,6 +3,7 @@
 
 #include <QRect>
 #include <QColor>
+#include <QDataStream>
 
 #include <memory>
 
@@ -32,5 +33,8 @@ private:
   QColor color, previewColor;
   bool active;
 };
+
+QDataStream &operator<<(QDataStream &stream, const Border &border);
+QDataStream &operator>>(QDataStream &stream, Border &border);
 
 #endif // SLD_BORDER_H
