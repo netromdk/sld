@@ -9,7 +9,7 @@ class MainWindow : public QMainWindow {
   Q_OBJECT
 
 public:
-  MainWindow();
+  MainWindow(const QString &file = QString());
 
 protected:
   void showEvent(QShowEvent *event);
@@ -24,6 +24,7 @@ private:
   void createLayout();
   void createMenu();
   void save(bool askFile = true);
+  void load(bool askFile = true);
   void updateTitle();
 
   Grid *grid;

@@ -14,7 +14,7 @@
 #include "Version.h"
 #include "MainWindow.h"
 
-MainWindow::MainWindow() {
+MainWindow::MainWindow(const QString &file) : file(file) {
   updateTitle();
   createLayout();
   createMenu();
@@ -22,6 +22,9 @@ MainWindow::MainWindow() {
 
 void MainWindow::showEvent(QShowEvent *event) {
   Util::centerWidget(this);
+  if (!file.isEmpty()) {
+    load(false);
+  }
 }
 
 void MainWindow::newProject() {
@@ -37,31 +40,7 @@ void MainWindow::newProject() {
 }
 
 void MainWindow::openProject() {
-  QString file =
-    QFileDialog::getOpenFileName(this, tr("Open Project"),
-                                 QDir::homePath(),
-                                 tr("SLD Project (*.sldp)"));
-  if (file.isEmpty()) {
-    return;
-  }
-
-  QFile f(file);
-  if (!f.open(QIODevice::ReadOnly)) {
-    QMessageBox::warning(this, "sld",
-                         tr("Could not open file for reading: %1").arg(file));
-    return;
-  }
-
-  this->file = file;
-
-  QDataStream stream(&f);
-  QString header;
-  stream >> header;
-  int version;
-  stream >> version;
-  grid->load(stream, version);
-
-  updateTitle();
+  load(true);
 }
 
 void MainWindow::saveProject() {
@@ -124,6 +103,39 @@ void MainWindow::save(bool askFile) {
   QDataStream stream(&f);
   stream << QString(PROJECT_HEADER) << (int) PROJECT_VERSION;
   grid->save(stream);
+
+  this->file = path;
+  updateTitle();
+}
+
+void MainWindow::load(bool askFile) {
+  QString path;
+  if (askFile || this->file.isEmpty()) {
+    path =
+      QFileDialog::getOpenFileName(this, tr("Open Project"),
+                                   QDir::homePath(),
+                                   tr("SLD Project (*.sldp)"));
+    if (path.isEmpty()) {
+      return;
+    }
+  }
+  else {
+    path = this->file;
+  }
+
+  QFile f(path);
+  if (!f.open(QIODevice::ReadOnly)) {
+    QMessageBox::warning(this, "sld",
+                         tr("Could not open file for reading: %1").arg(path));
+    return;
+  }
+
+  QDataStream stream(&f);
+  QString header;
+  stream >> header;
+  int version;
+  stream >> version;
+  grid->load(stream, version);
 
   this->file = path;
   updateTitle();
