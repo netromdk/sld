@@ -54,6 +54,20 @@ void MainWindow::saveAsProject() {
   save(true);
 }
 
+void MainWindow::exportImage() {
+  QString path =
+    QFileDialog::getSaveFileName(this, tr("Export Image"), QString(),
+                                 tr("Image Files (*.png *.jpg)"));
+  if (path.isEmpty()) {
+    return;
+  }
+
+  if (!grid->exportImage(path)) {
+    QMessageBox::warning(this, "sld",
+                         tr("Could not export image to: %1").arg(path));
+  }
+}
+
 void MainWindow::clearFields() {
   grid->clear();
 }
@@ -93,6 +107,9 @@ void MainWindow::createMenu() {
                       QKeySequence::Save);
   fileMenu->addAction(tr("Save as.."), this, SLOT(saveAsProject()),
                       QKeySequence::SaveAs);
+  fileMenu->addSeparator();
+  fileMenu->addAction(tr("Export image"), this, SLOT(exportImage()),
+                      QKeySequence(Qt::CTRL + Qt::Key_E));
 
   QMenu *editMenu = menuBar()->addMenu(tr("Edit"));
   QMenu *gridEditMenu = editMenu->addMenu(tr("Grid"));

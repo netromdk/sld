@@ -57,6 +57,16 @@ void Grid::load(QDataStream &stream, int version) {
   applyZoom(1);
 }
 
+bool Grid::exportImage(const QString &file) {
+  QFile f(file);
+  if (!f.open(QIODevice::WriteOnly)) {
+    return false;
+  }
+
+  QImage img = renderImage();
+  return img.save(file);
+}
+
 void Grid::applyZoom(float factor) {
   zoomFactor = factor;
   updateSize();
@@ -74,14 +84,8 @@ void Grid::applyZoom(float factor) {
 void Grid::paintEvent(QPaintEvent *event) {
   QWidget::paintEvent(event);
 
-  QRect prect = event->rect();
   QPainter painter(this);
-  foreach (const auto field, fields) {
-    const auto &rect = field->getRect();
-    if (prect.intersects(rect)) {
-      field->paint(painter);
-    }
-  }
+  paintGrid(painter, event->rect());
 }
 
 void Grid::mouseReleaseEvent(QMouseEvent *event) {
@@ -161,6 +165,15 @@ void Grid::createGrid() {
   }
 }
 
+void Grid::paintGrid(QPainter &painter, const QRect &rect) {
+  foreach (const auto field, fields) {
+    const auto &r = field->getRect();
+    if (rect.isNull() || rect.intersects(r)) {
+      field->paint(painter);
+    }
+  }
+}
+
 FieldPtr Grid::findField(const QPoint &pos) {
   foreach (const auto field, fields) {
     if (field->containsPoint(pos)) {
@@ -196,4 +209,20 @@ FieldPtr Grid::findNeighbor(FieldPtr field, CardinalDir dir) {
     }
   }
   return nullptr;
+}
+
+QImage Grid::renderImage() {
+  QImage img(minimumSize(), QImage::Format_RGB888);
+  {
+    QPainter painter(&img);
+    paintGrid(painter);
+  }
+
+  // Scale back to 100%
+  if (zoomFactor > 1 || zoomFactor < 1) {
+    QSize scaledSize(width * side, height * side);
+    img = img.scaled(scaledSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+  }
+
+  return img;
 }

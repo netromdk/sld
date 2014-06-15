@@ -20,6 +20,7 @@ private slots:
   void openProject();
   void saveProject();
   void saveAsProject();
+  void exportImage();
   void clearFields();
   void clearBorders();
 
