@@ -34,6 +34,7 @@ public:
   const QMap<CardinalDir, BorderPtr> &getBorders() const { return borders; }
   void setBorders(const QMap<CardinalDir, BorderPtr> &borders) { this->borders = borders; }
   void setBorder(CardinalDir dir, const QColor &color, bool preview = false);
+  void clearBorders();
 
   void paint(QPainter &painter);
 

@@ -51,6 +51,14 @@ void MainWindow::saveAsProject() {
   save(true);
 }
 
+void MainWindow::clearFields() {
+  grid->clear();
+}
+
+void MainWindow::clearBorders() {
+  grid->clearBorders();
+}
+
 void MainWindow::createLayout() {
   auto *toolbox = new Toolbox;
 
@@ -77,6 +85,11 @@ void MainWindow::createMenu() {
                       QKeySequence::Save);
   fileMenu->addAction(tr("Save as.."), this, SLOT(saveAsProject()),
                       QKeySequence::SaveAs);
+
+  QMenu *editMenu = menuBar()->addMenu(tr("Edit"));
+  QMenu *gridEditMenu = editMenu->addMenu(tr("Grid"));
+  gridEditMenu->addAction(tr("Clear fields"), this, SLOT(clearFields()));
+  gridEditMenu->addAction(tr("Clear borders"), this, SLOT(clearBorders()));
 }
 
 void MainWindow::save(bool askFile) {

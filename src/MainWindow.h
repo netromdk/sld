@@ -19,6 +19,8 @@ private slots:
   void openProject();
   void saveProject();
   void saveAsProject();
+  void clearFields();
+  void clearBorders();
 
 private:
   void createLayout();

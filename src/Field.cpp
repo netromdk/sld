@@ -76,6 +76,10 @@ void Field::setBorder(CardinalDir dir, const QColor &color, bool preview) {
   }
 }
 
+void Field::clearBorders() {
+  updateBorders();
+}
+
 void Field::paint(QPainter &painter) {
   QColor c = color;
   if (previewColor.isValid()) {

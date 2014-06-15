@@ -15,6 +15,8 @@ public:
   ~Grid();
 
   void clear();
+  void clearBorders();
+
   void save(QDataStream &stream);
   void load(QDataStream &stream, int version);
 
