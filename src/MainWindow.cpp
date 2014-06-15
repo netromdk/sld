@@ -7,6 +7,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDataStream>
+#include <QScrollArea>
 
 #include "Util.h"
 #include "Grid.h"
@@ -64,9 +65,13 @@ void MainWindow::createLayout() {
 
   grid = new Grid(16, 16, toolbox);
 
+  auto *scrollArea = new QScrollArea;
+  scrollArea->setBackgroundRole(QPalette::Dark);
+  scrollArea->setWidget(grid);
+
   auto *layout = new QHBoxLayout;
   layout->setContentsMargins(5, 5, 5, 5);
-  layout->addWidget(grid);
+  layout->addWidget(scrollArea);
   layout->addWidget(toolbox);
 
   auto *w = new QWidget;
