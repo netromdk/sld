@@ -24,6 +24,7 @@ private:
   void createLayout();
   void createMenu();
   void save(bool askFile = true);
+  void updateTitle();
 
   Grid *grid;
   QString file;

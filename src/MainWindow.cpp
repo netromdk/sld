@@ -2,6 +2,7 @@
 #include <QMenu>
 #include <QDebug>
 #include <QMenuBar>
+#include <QFileInfo>
 #include <QHBoxLayout>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -14,7 +15,7 @@
 #include "MainWindow.h"
 
 MainWindow::MainWindow() {
-  setWindowTitle(tr("Strategic Layout Designer"));
+  updateTitle();
   createLayout();
   createMenu();
 }
@@ -32,6 +33,7 @@ void MainWindow::newProject() {
   }
   file.clear();
   grid->clear();
+  updateTitle();
 }
 
 void MainWindow::openProject() {
@@ -58,6 +60,8 @@ void MainWindow::openProject() {
   int version;
   stream >> version;
   grid->load(stream, version);
+
+  updateTitle();
 }
 
 void MainWindow::saveProject() {
@@ -122,4 +126,13 @@ void MainWindow::save(bool askFile) {
   grid->save(stream);
 
   this->file = path;
+  updateTitle();
+}
+
+void MainWindow::updateTitle() {
+  QString msg;
+  if (!file.isEmpty()) {
+    msg = " [" + QFileInfo(file).fileName() + "]";
+  }
+  setWindowTitle(tr("Strategic Layout Designer%1").arg(msg));
 }
