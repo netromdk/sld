@@ -48,11 +48,9 @@ void Grid::paintEvent(QPaintEvent *event) {
   QPainter painter(this);
   foreach (const auto field, fields) {
     const auto &rect = field->getRect();
-    if (!prect.intersects(rect)) {
-      continue;
+    if (prect.intersects(rect)) {
+      field->paint(painter);
     }
-
-    field->paint(painter);
   }
 }
 
@@ -61,8 +59,16 @@ void Grid::mouseReleaseEvent(QMouseEvent *event) {
 
   auto field = findField(event->pos());
   if (field) {
-    field->setColor(toolbox->getColor());
-    update(field->getRect());
+    switch (toolbox->getTool()) {
+    case ToolKind::Field:
+      field->setColor(toolbox->getColor());
+      update(field->getRect());
+      break;
+
+    case ToolKind::Border:
+      // TODO
+      break;
+    }
   }
 }
 
@@ -71,8 +77,17 @@ void Grid::mouseMoveEvent(QMouseEvent *event) {
 
   auto field = findField(event->pos());
   if (field) {
-    field->setPreviewColor(toolbox->getColor());
-    update();
+    switch (toolbox->getTool()) {
+    case ToolKind::Field:
+      field->setPreviewColor(toolbox->getColor());
+      update();
+      break;
+
+    case ToolKind::Border:
+      field->tryDetectBorder(event->pos(), toolbox->getColor());
+      update();
+      break;
+    }
   }
 }
 

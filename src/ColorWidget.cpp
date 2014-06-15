@@ -41,7 +41,7 @@ void ColorWidget::setup() {
            << Qt::gray << Qt::magenta << Qt::black << Qt::white;
   }
   for (int i = 0, row = 0, col = 0; i < colors.size(); i++, col++) {
-    if (col >= 4) {
+    if (col >= 3) {
       col = 0;
       row++;
     }
