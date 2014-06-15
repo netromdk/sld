@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 class Grid;
+class Toolbox;
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
@@ -29,6 +30,7 @@ private:
   void load(bool askFile = true);
   void updateTitle();
 
+  Toolbox *toolbox;
   Grid *grid;
   QString file;
 };

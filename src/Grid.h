@@ -20,6 +20,9 @@ public:
   void save(QDataStream &stream);
   void load(QDataStream &stream, int version);
 
+public slots:
+  void applyZoom(float factor);
+
 protected:
   void paintEvent(QPaintEvent *event);
   void mouseReleaseEvent(QMouseEvent *event);
@@ -32,6 +35,7 @@ private:
   FieldPtr findNeighbor(FieldPtr field, CardinalDir dir);
   
   int width, height, side;
+  float zoomFactor;
   Toolbox *toolbox;
   QList<FieldPtr> fields;
 };

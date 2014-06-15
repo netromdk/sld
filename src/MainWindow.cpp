@@ -19,6 +19,7 @@ MainWindow::MainWindow(const QString &file) : file(file) {
   updateTitle();
   createLayout();
   createMenu();
+  resize(700, 530);
 }
 
 void MainWindow::showEvent(QShowEvent *event) {
@@ -37,6 +38,7 @@ void MainWindow::newProject() {
   }
   file.clear();
   grid->clear();
+  toolbox->resetZoom();
   updateTitle();
 }
 
@@ -61,9 +63,10 @@ void MainWindow::clearBorders() {
 }
 
 void MainWindow::createLayout() {
-  auto *toolbox = new Toolbox;
+  toolbox = new Toolbox;
 
   grid = new Grid(16, 16, toolbox);
+  connect(toolbox, &Toolbox::zoomChanged, grid, &Grid::applyZoom);
 
   auto *scrollArea = new QScrollArea;
   scrollArea->setBackgroundRole(QPalette::Dark);
@@ -147,6 +150,8 @@ void MainWindow::load(bool askFile) {
                          tr("Could not open file for reading: %1").arg(path));
     return;
   }
+
+  toolbox->resetZoom();
 
   QDataStream stream(&f);
   QString header;

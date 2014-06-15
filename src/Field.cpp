@@ -102,25 +102,42 @@ void Field::paint(QPainter &painter) {
 void Field::updateBorders() {
   float slack = 0.16;
   int w = rect.width() * slack;
-  borders.clear();
 
   BorderPtr border(new Border);
+  if (borders.contains(CardinalDir::North)) {
+    border = borders[CardinalDir::North];
+  }
   border->setRect(QRect(rect.topLeft(), QSize(rect.width(), w)));
   borders[CardinalDir::North] = border;
 
   QRect r(rect.topLeft(), QSize(rect.width(), w));
   r.translate(0, rect.height() - w);
-  border.reset(new Border);
+  if (borders.contains(CardinalDir::South)) {
+    border = borders[CardinalDir::South];
+  }
+  else {
+    border.reset(new Border);
+  }
   border->setRect(r);
   borders[CardinalDir::South] = border;
 
-  border.reset(new Border);
+  if (borders.contains(CardinalDir::West)) {
+    border = borders[CardinalDir::West];
+  }
+  else {
+    border.reset(new Border);
+  }
   border->setRect(QRect(rect.topLeft(), QSize(w, rect.height())));
   borders[CardinalDir::West] = border;
 
+  if (borders.contains(CardinalDir::East)) {
+    border = borders[CardinalDir::East];
+  }
+  else {
+    border.reset(new Border);
+  }
   r = QRect(rect.topLeft(), QSize(w, rect.height()));
   r.translate(rect.height() - w, 0);
-  border.reset(new Border);
   border->setRect(r);
   borders[CardinalDir::East] = border;
 }

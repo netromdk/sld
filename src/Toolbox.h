@@ -19,14 +19,20 @@ public:
   ToolKind getTool() const { return tool; }
   const QColor& getColor() const { return color; }
 
+  void resetZoom();
+
+signals:
+  void zoomChanged(float factor);
+
 private slots:
   void onToolChanged(int index);
   void onColorClicked(const QColor &color);
+  void onZoomChanged(int index);
 
 private:
   void createLayout();
 
-  QComboBox *toolBox;
+  QComboBox *toolBox, *zoomBox;
 
   ToolKind tool;
   QColor color;

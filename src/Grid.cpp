@@ -7,7 +7,7 @@
 #include "Toolbox.h"
 
 Grid::Grid(int width, int height, Toolbox *toolbox)
-  : width(width), height(height), side(30), toolbox(toolbox)
+  : width(width), height(height), side(30), zoomFactor(1), toolbox(toolbox)
 {
   setMouseTracking(true);
   updateSize();
@@ -19,6 +19,7 @@ Grid::~Grid() {
 }
 
 void Grid::clear() {
+  zoomFactor = 1;
   fields.clear();
   createGrid();
   update();
@@ -51,6 +52,21 @@ void Grid::load(QDataStream &stream, int version) {
     auto *field = new Field;
     stream >> *field;
     fields << FieldPtr(field);
+  }
+
+  applyZoom(1);
+}
+
+void Grid::applyZoom(float factor) {
+  zoomFactor = factor;
+  updateSize();
+
+  int i = 0, sside = side * zoomFactor;
+  for (int x = 0; x < width; x++) {
+    for (int y = 0; y < height; y++, i++) {
+      QRect rect(x * sside, y * sside, sside, sside);
+      fields[i]->setRect(rect);
+    }
   }
   update();
 }
@@ -125,7 +141,7 @@ void Grid::mouseMoveEvent(QMouseEvent *event) {
 
 void Grid::updateSize() {
   // + a little slack.
-  QSize size(width * side + 2, height * side + 2);
+  QSize size(width * side * zoomFactor + 2, height * side * zoomFactor + 2);
   setMinimumSize(size);
 }
 
