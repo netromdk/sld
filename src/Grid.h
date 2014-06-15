@@ -14,6 +14,7 @@ public:
   Grid(int width, int height, Toolbox *toolbox);
   ~Grid();
 
+  void clear();
   void save(QDataStream &stream);
   void load(QDataStream &stream, int version);
 

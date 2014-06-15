@@ -15,6 +15,7 @@ protected:
   void showEvent(QShowEvent *event);
 
 private slots:
+  void newProject();
   void openProject();
   void saveProject();
 
@@ -23,6 +24,7 @@ private:
   void createMenu();
 
   Grid *grid;
+  QString file;
 };
 
 #endif // SLD_MAIN_WINDOW_H

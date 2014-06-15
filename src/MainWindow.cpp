@@ -23,6 +23,17 @@ void MainWindow::showEvent(QShowEvent *event) {
   Util::centerWidget(this);
 }
 
+void MainWindow::newProject() {
+  QMessageBox::StandardButton res  =
+    QMessageBox::question(this, "sld",
+                          tr("Are you sure you want to create a new, empty project?"));
+  if (res == QMessageBox::No) {
+    return;
+  }
+  file.clear();
+  grid->clear();
+}
+
 void MainWindow::openProject() {
   QString file =
     QFileDialog::getOpenFileName(this, tr("Open Project"),
@@ -38,6 +49,8 @@ void MainWindow::openProject() {
                          tr("Could not open file for reading: %1").arg(file));
     return;
   }
+
+  this->file = file;
 
   QDataStream stream(&f);
   QString header;
@@ -85,6 +98,8 @@ void MainWindow::createLayout() {
 
 void MainWindow::createMenu() {
   QMenu *fileMenu = menuBar()->addMenu(tr("File"));
+  fileMenu->addAction(tr("New project"), this, SLOT(newProject()),
+                      QKeySequence::New);
   fileMenu->addAction(tr("Open project"), this, SLOT(openProject()),
                       QKeySequence::Open);
   fileMenu->addAction(tr("Save project"), this, SLOT(saveProject()),

@@ -17,6 +17,12 @@ Grid::~Grid() {
   fields.clear();
 }
 
+void Grid::clear() {
+  fields.clear();
+  createGrid();
+  update();
+}
+
 void Grid::save(QDataStream &stream) {
   stream << width << height << side << fields.size();
   foreach (const auto field, fields) {
