@@ -20,13 +20,16 @@ bool Field::containsPoint(const QPoint &pos) const {
   return rect.contains(pos);
 }
 
-void Field::tryDetectBorder(const QPoint &pos, const QColor &color) {
+void Field::tryDetectBorder(const QPoint &pos, const QColor &color,
+                            bool preview) {
   foreach (auto key, borders.keys()) {
     Border &border = borders[key];
     auto &rect = border.rect;
     if (rect.contains(pos)) {
       bool ok = true;
       float slack = 0.2;
+
+      // Ignore if at the corners.
       switch (key) {
       case CardinalDir::North:
       case CardinalDir::South:
@@ -40,9 +43,15 @@ void Field::tryDetectBorder(const QPoint &pos, const QColor &color) {
               pos.y() <= rect.y() + rect.height() * (1 - slack));
         break;
       }
+
       if (ok) {
         border.active = true;
-        border.previewColor = color;
+        if (preview) {
+          border.previewColor = color;
+        }
+        else {
+          border.color = color;
+        }
       }
     }
   }

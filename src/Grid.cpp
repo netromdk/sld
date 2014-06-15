@@ -66,7 +66,8 @@ void Grid::mouseReleaseEvent(QMouseEvent *event) {
       break;
 
     case ToolKind::Border:
-      // TODO
+      field->tryDetectBorder(event->pos(), toolbox->getColor());
+      update(field->getRect());
       break;
     }
   }
@@ -84,7 +85,7 @@ void Grid::mouseMoveEvent(QMouseEvent *event) {
       break;
 
     case ToolKind::Border:
-      field->tryDetectBorder(event->pos(), toolbox->getColor());
+      field->tryDetectBorder(event->pos(), toolbox->getColor(), true);
       update();
       break;
     }

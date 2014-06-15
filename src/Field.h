@@ -41,7 +41,8 @@ public:
   const QColor &getColor() const  { return color; }
   void setColor(const QColor &color) { this->color = color; }
   void setPreviewColor(const QColor &color) { previewColor = color; }
-  void tryDetectBorder(const QPoint &pos, const QColor &color);
+  void tryDetectBorder(const QPoint &pos, const QColor &color,
+                       bool preview = false);
 
   void paint(QPainter &painter);
 
